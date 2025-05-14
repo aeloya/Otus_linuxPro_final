@@ -1,0 +1,4 @@
+reserve ansible_host=192.168.122.62 ansible_port=22 ansible_user=miriel ansible_password=E95Aeloya
+grafana ansible_host=192.168.122.77 ansible_port=22 ansible_user=miriel ansible_password=E95Aeloya
+grafana2 ansible_host=192.168.122.68 ansible_port=22 ansible_user=miriel ansible_password=E95Aeloya
+replica ansible_host=192.168.122.95 ansible_port=22 ansible_user=miriel ansible_password=E95Aeloya
