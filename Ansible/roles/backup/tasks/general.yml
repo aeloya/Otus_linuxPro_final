@@ -10,7 +10,7 @@
 
 - name: Copy config file for logging
   copy:
-     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/backup/conf/journal-upload.conf
+     src: roles/backup/conf/journal-upload.conf
      dest: /etc/systemd/journal-upload.conf
 
 - name: Just force systemd to reread configs
