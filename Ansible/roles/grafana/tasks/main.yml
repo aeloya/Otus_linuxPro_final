@@ -1,0 +1,10 @@
+---
+
+  - name: configure NIC
+    import_tasks: network.yml
+
+  - name: Install and configure general packges
+    import_tasks: general.yml
+
+  - name: Install and configure Grafana and Prometheus
+    import_tasks: grafana.yml
