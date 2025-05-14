@@ -1,0 +1,15 @@
+[Unit]
+Description=VictoriaMetrics
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/victoria-logs-prod --journald.streamFields _TRANSPORT=journal
+ExecStop=/bin/kill -s SIGTERM $MAINPID
+StartLimitBurst=5
+StartLimitInterval=0
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
