@@ -1,0 +1,31 @@
+---
+
+- name: install packages
+  apt:
+    update_cache: yes
+    name:
+      - borgbackup
+      - prometheus-node-exporter
+      - systemd-journal-remote
+
+- name: Copy config file for logging
+  copy:
+     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/backup/conf/journal-upload.conf
+     dest: /etc/systemd/journal-upload.conf
+
+- name: Just force systemd to reread configs
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: journal-remote systemd service
+  systemd_service:
+    name: systemd-journal-remote.service
+    enabled: true
+    state: started
+
+- name: prometheus-node-exporter systemd service
+  systemd_service:
+     name: prometheus-node-exporter.service
+     enabled: true
+     state: started
+
