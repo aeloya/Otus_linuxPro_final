@@ -1,0 +1,94 @@
+---
+
+- name: install prometheus and several necessary packages
+  apt:
+    update_cache: yes
+    name:
+      - wget
+      - tar
+      - apt-transport-https
+      - software-properties-common
+      - prometheus
+      - prometheus-alertmanager
+
+- name: Copy config file for prometheus
+  copy:
+     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/grafana2/conf/prometheus.yml
+     dest: /etc/prometheus/prometheus.yml
+
+- name: Copy config file for prometheus-alertmanager
+  copy:
+     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/grafana2/conf/alert.rules.yml
+     dest: /etc/prometheus/alert.rules.yml
+
+- name: Add grafana GPG key
+  ansible.builtin.get_url:
+    url: https://apt.grafana.com/gpg.key
+    dest: /etc/apt/keyrings/grafana.asc
+    mode: '0644'
+    force: true
+
+- name: grafanarepo | apt source
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main"
+    state: present
+    update_cache: yes
+
+- name: install grafana
+  apt:
+     name:
+      - grafana
+
+- name: Copy config file for gafana
+  copy:
+     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/grafana2/conf/grafana.ini
+     dest: /etc/grafana/grafana.ini
+ 
+- name: Just force systemd to reread configs
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: prometheus systemd service
+  systemd_service:
+     name: prometheus.service
+     enabled: true
+     state: started
+
+- name: prometheus-alertmanager systemd service
+  systemd_service:
+     name: prometheus-alertmanager.service
+     enabled: true
+     state: restarted
+
+- name: grafana-server systemd service
+  systemd_service:
+     name: grafana-server.service
+     enabled: true
+     state: started
+
+- name: This command will install plugin for victoriametrics
+  ansible.builtin.shell:
+    cmd: grafana-cli plugins install victoriametrics-metrics-datasource
+  args:
+    executable: /bin/bash
+
+- name: This command will install plugin for victorialogs
+  ansible.builtin.shell:
+    cmd: grafana-cli plugins install victoriametrics-logs-datasource
+  args:
+    executable: /bin/bash
+
+- name: Just force systemd to reread configs
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: prometheus systemd service restart
+  systemd_service:
+     name: prometheus.service
+     state: restarted
+
+- name: grafana-server systemd service restart
+  systemd_service:
+     name: grafana-server.service
+     state: restarted
+
