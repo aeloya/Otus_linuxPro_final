@@ -1,0 +1,128 @@
+---
+- name: Add testing repository into sources list
+  deb822_repository:
+    name: debian
+    types: deb
+    uris: http://mirror.yandex.ru/debian/
+    suites: testing
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+
+- name: Add testing_security repository into sources list
+  deb822_repository:
+    name: debian
+    types: deb
+    uris: http://security.debian.org/debian-security/
+    suites: testing
+    components:
+      - main
+      - contrib
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+
+- name: Add testing_updates repository into sources list
+  deb822_repository:
+    name: debian
+    types: deb
+    uris: http://mirror.yandex.ru/debian/
+    suites: testing-updates
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+
+- name: apt upgrade
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: install several additional packages
+  apt:
+    name:
+      - wget
+      - tar
+      - software-properties-common
+
+- name: Ensure group "victoriametrics" exists
+  ansible.builtin.group:
+    name: victoriametrics
+    state: present
+
+- name: Add the user victoriametrics a primary group of 'victoriametrics'
+  ansible.builtin.user:
+    name: victoriametrics
+    comment: VictoriaMetrics TSDB Service
+    group: victoriametrics
+
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: /var/lib/victoriametrics
+    state: directory
+    mode: '0755'
+    owner: victoriametrics
+    group: victoriametrics
+
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: /run/victoriametrics
+    state: directory
+    mode: '0755'
+    owner: victoriametrics
+    group: victoriametrics
+
+- name: Copy package file for victoriametrics
+  copy:
+     src: roles/logs/conf/victoria-metrics-linux-amd64-v1.116.0.tar.gz
+     dest: /root/victoria-metrics-linux-amd64-v1.116.0.tar.gz
+
+- name: Decompress file for victoriametrics
+  community.general.decompress:
+    src: /root/victoria-metrics-linux-amd64-v1.116.0.tar.gz
+    dest: /usr/local/bin/victoria-metrics-prod
+    mode: -rwxr-xr-x
+    group: victoriametrics
+    owner: victoriametrics
+
+- name: Copy package file for victorialogs
+  copy:
+     src: roles/logs/conf/victoria-logs-linux-amd64-v1.21.0-victorialogs.tar.gz
+     dest: /root/victoria-logs-linux-amd64-v1.21.0-victorialogs.tar.gz
+
+- name: Decompress file for victorialogs
+  community.general.decompress:
+    src: /root/victoria-logs-linux-amd64-v1.21.0-victorialogs.tar.gz
+    dest: /usr/local/bin/victoria-logs-prod
+    mode: -rwxr-xr-x
+    group: victoriametrics
+    owner: victoriametrics
+
+- name: Copy unit file for victoriametrics service
+  copy:
+    src: roles/logs/conf/victoriametrics.service
+    dest: /etc/systemd/system/victoriametrics.service
+ 
+- name: Copy unit file for victorialogs service
+  copy:
+    src: roles/logs/conf/victorialogs.service
+    dest: /etc/systemd/system/victorialogs.service
+  
+- name: Just force systemd to reread configs
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: victorialogs systemd service
+  systemd_service:
+     name: victorialogs.service
+     enabled: true
+     state: started
+
+- name: victoriametrics systemd service
+  systemd_service:
+     name: victoriametrics.service
+     enabled: true
+     state: started
