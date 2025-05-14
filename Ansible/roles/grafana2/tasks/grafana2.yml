@@ -13,12 +13,12 @@
 
 - name: Copy config file for prometheus
   copy:
-     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/grafana2/conf/prometheus.yml
+     src: roles/grafana2/conf/prometheus.yml
      dest: /etc/prometheus/prometheus.yml
 
 - name: Copy config file for prometheus-alertmanager
   copy:
-     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/grafana2/conf/alert.rules.yml
+     src: roles/grafana2/conf/alert.rules.yml
      dest: /etc/prometheus/alert.rules.yml
 
 - name: Add grafana GPG key
@@ -41,7 +41,7 @@
 
 - name: Copy config file for gafana
   copy:
-     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/grafana2/conf/grafana.ini
+     src: roles/grafana2/conf/grafana.ini
      dest: /etc/grafana/grafana.ini
  
 - name: Just force systemd to reread configs
