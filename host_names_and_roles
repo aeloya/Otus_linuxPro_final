@@ -1,0 +1,11 @@
+S-Mandos                192.168.122.1         S-Mandos
+debian12-srv-00	192.168.122.77	grafana
+debian12-srv-01	192.168.122.33	logs
+debian12-srv-02	192.168.122.95	replica
+debian12-srv-03	192.168.122.22	postgres
+debian12-srv-04	192.168.122.39	backup
+debian12-srv-05	192.168.122.68	grafana2
+debian12-srv-06	192.168.122.184	proxy1
+debian12-srv-07	192.168.122.13	proxy2
+debian12-srv-08	192.168.122.62	reserve
+
