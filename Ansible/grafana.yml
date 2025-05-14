@@ -1,0 +1,6 @@
+---
+- name: test
+  hosts: reserve
+  become: yes
+  roles:
+     - name: grafana

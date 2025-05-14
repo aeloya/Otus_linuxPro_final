@@ -1,0 +1,6 @@
+---
+- name: restore log server
+  hosts: reserve
+  become: yes
+  roles:
+     - name: logs

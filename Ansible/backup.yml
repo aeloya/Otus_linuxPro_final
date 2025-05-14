@@ -1,0 +1,5 @@
+- name: restore backup server 
+  hosts: reserve
+  become: yes
+  roles:
+     - name: backup

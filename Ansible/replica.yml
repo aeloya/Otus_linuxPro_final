@@ -1,0 +1,5 @@
+- name: restore replica server
+  hosts: reserve
+  become: yes
+  roles:
+     - name: replica

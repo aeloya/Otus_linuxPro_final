@@ -1,0 +1,6 @@
+---
+- name: restore second proxy server
+  hosts: reserve
+  become: yes
+  roles:
+     - name: proxy2
