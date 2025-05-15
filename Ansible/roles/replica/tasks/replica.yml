@@ -50,12 +50,12 @@
 
 - name: Copy config file for postgres
   copy:
-     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/replica/conf/postgresql.conf
+     src: roles/replica/conf/postgresql.conf
      dest: /etc/postgresql/15/main/postgresql.conf
 
 - name: Copy auth config file for postgres
   copy:
-     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/replica/conf/pg_hba.conf
+     src: roles/replica/conf/pg_hba.conf
      dest: /etc/postgresql/15/main/pg_hba.conf
  
 - name: Just force systemd to reread configs
