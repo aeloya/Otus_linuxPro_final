@@ -1,0 +1,93 @@
+---
+
+- name: install packages
+  apt:
+    update_cache: yes
+    name:
+      - borgbackup
+      - prometheus-node-exporter
+      - prometheus-postgres-exporter
+      - systemd-journal-remote
+
+- name: Copy config file for logging
+  copy:
+     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/replica/conf/journal-upload.conf
+     dest: /etc/systemd/journal-upload.conf
+
+- name: Copy private key for root
+  copy:
+    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/replica/conf/id_ed25519
+    dest: /root/.ssh/id_ed25519
+
+- name: Change root's private key file ownership, group and permissions
+  file:
+    path: /root/.ssh/id_ed25519
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Copy public key for root
+  copy:
+    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/replica/conf/id_ed25519.pub
+    dest: /root/.ssh/id_ed25519.pub
+
+- name: Copy known_hosts for root
+  copy:
+    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/replica/conf/known_hosts
+    dest: /root/.ssh/known_hosts
+
+- name: Copy executable file for borg
+  copy:
+    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/replica/conf/borg-backup.sh
+    dest: /etc/borg-backup.sh
+    
+- name: Change borg executable file ownership, group and permissions
+  file:
+    path: /etc/borg-backup.sh
+    owner: root
+    group: root
+    mode: '0751'
+
+- name: Copy unit file for borg
+  copy:
+    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/replica/conf/borg-backup.service
+    dest: /etc/systemd/system/borg-backup.service
+
+- name: Copy timer file for borg
+  copy:
+    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/replica/conf/borg-backup.timer
+    dest: /etc/systemd/system/borg-backup.timer
+
+- name: Just force systemd to reread configs
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: journal-remote systemd service
+  systemd_service:
+    name: systemd-journal-remote
+    enabled: true
+    state: restarted
+
+- name: prometheus-node-exporter systemd service
+  systemd_service:
+     name: prometheus-node-exporter.service
+     enabled: true
+     state: restarted
+
+- name: prometheus-postgres-exporter systemd service
+  systemd_service:
+     name: prometheus-postgres-exporter.service
+     enabled: true
+     state: restarted
+
+- name: borg backup systemd service
+  systemd_service:
+   name: borg-backup.service
+   enabled: true
+
+- name: borg backup systemd timer
+  systemd_service:
+    name: borg-backup.timer
+    enabled: true
+    state: started
+
