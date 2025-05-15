@@ -1,0 +1,36 @@
+---
+
+- name: configure hostname
+  hostname:
+          name: postgres
+
+- name: Copy /etc/hosts
+  copy:
+      src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/postgres/conf/hosts
+      dest: /etc/hosts
+
+- name: Configure network
+  nmcli:
+      conn_name: enp7s0
+      ifname: enp7s0
+      ip4: 192.168.122.22/24
+      never_default4: false
+      dns4:
+         - 8.8.4.4
+         - 8.8.8.8
+      state: present
+      autoconnect: yes
+      type: ethernet
+
+- name: Reconfigure network
+  nmcli:
+      conn_name: enp1s0
+      ifname: enp1s0
+      ip4: 192.168.122.62/24
+      gw4: 192.168.122.1
+      dns4:
+         - 8.8.4.4
+         - 8.8.8.8
+      state: present
+      autoconnect: yes
+      type: ethernet

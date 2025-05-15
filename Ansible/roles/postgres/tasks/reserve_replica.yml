@@ -1,0 +1,94 @@
+---
+- name: Add testing repository into sources list
+  deb822_repository:
+    name: debian
+    types: deb
+    uris: http://mirror.yandex.ru/debian/
+    suites: testing
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+
+- name: Add testing-security repository into sources list
+  deb822_repository:
+    name: debian
+    types: deb
+    uris: http://security.debian.org/debian-security/
+    suites: testing
+    components:
+      - main
+      - contrib
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+
+- name: Add testing-updates repository into sources list
+  deb822_repository:
+    name: debian
+    types: deb
+    uris: http://mirror.yandex.ru/debian/
+    suites: testing-updates
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+
+- name: dist-upgrade
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: dist
+
+- name: install postgresql-15 and several necessary packages
+  ansible.builtin.apt:
+    pkg:
+    - postgresql-15 
+    - postgresql-common
+    update_cache: yes
+
+- name: Copy config file for postgres
+  copy:
+     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/postgres/conf/postgresql.conf
+     dest: /etc/postgresql/15/main/postgresql.conf
+
+- name: Copy auth config file for postgres
+  copy:
+     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/postgres/conf/pg_hba.conf
+     dest: /etc/postgresql/15/main/pg_hba.conf
+ 
+- name: Just force systemd to reread configs
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: postgresql systemd service
+  systemd_service:
+     name: postgresql.service
+     enabled: true
+     state: stopped
+
+- name: Recursively remove existing directory
+  ansible.builtin.file:
+    path: /var/lib/postgresql/15/main/
+    state: absent
+
+- name: Create directory for cluster
+  ansible.builtin.file:
+    path: /var/lib/postgresql/15/main/
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: 0750
+
+- name: Restore database
+  ansible.builtin.command:  sudo -u postgres PGPASSWORD=postgres pg_basebackup -h 192.168.122.95 -D /var/lib/postgresql/15/main -U replicator -R --wal-method=stream
+
+- name: postgresql systemd service
+  systemd_service:
+     name: postgresql.service
+     enabled: true
+     state: restarted
+
+
+
