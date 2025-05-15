@@ -8,7 +8,7 @@
 
 - name: Copy config file for haproxy
   copy:
-     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/proxy2/conf/haproxy.cfg
+     src: roles/proxy2/conf/haproxy.cfg
      dest: /etc/haproxy/haproxy.cfg
  
 - name: Just force systemd to reread configs
