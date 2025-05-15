@@ -1,0 +1,23 @@
+---
+
+- name: install haproxy
+  apt:
+    update_cache: yes
+    name:
+      - haproxy
+
+- name: Copy config file for haproxy
+  copy:
+     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/proxy1/conf/haproxy.cfg
+     dest: /etc/haproxy/haproxy.cfg
+ 
+- name: Just force systemd to reread configs
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+- name: haproxy systemd service
+  systemd_service:
+     name: haproxy.service
+     enabled: true
+     state: restarted
+
