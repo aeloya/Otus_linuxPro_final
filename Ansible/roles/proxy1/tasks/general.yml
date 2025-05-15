@@ -10,12 +10,12 @@
 
 - name: Copy config file for logging
   copy:
-     src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/proxy1/conf/journal-upload.conf
+     src: roles/proxy1/conf/journal-upload.conf
      dest: /etc/systemd/journal-upload.conf
 
 - name: Copy private key for root
   copy:
-    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/proxy1/conf/id_rsa
+    src: roles/proxy1/conf/id_rsa
     dest: /root/.ssh/id_rsa
 
 - name: Change root's private key file ownership, group and permissions
@@ -27,17 +27,17 @@
 
 - name: Copy public key for root
   copy:
-    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/proxy1/conf/id_rsa.pub
+    src: roles/proxy1/conf/id_rsa.pub
     dest: /root/.ssh/id_rsa.pub
 
 - name: Copy known_hosts for root
   copy:
-    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/proxy1/conf/known_hosts
+    src: roles/proxy1/conf/known_hosts
     dest: /root/.ssh/known_hosts
 
 - name: Copy executable file for borg
   copy:
-    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/proxy1/conf/borg-backup.sh
+    src: roles/proxy1/conf/borg-backup.sh
     dest: /etc/borg-backup.sh
     
 - name: Change borg executable file ownership, group and permissions
@@ -49,12 +49,12 @@
 
 - name: Copy unit file for borg
   copy:
-    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/proxy1/conf/borg-backup.service
+    src: roles/proxy1/conf/borg-backup.service
     dest: /etc/systemd/system/borg-backup.service
 
 - name: Copy timer file for borg
   copy:
-    src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/proxy1/conf/borg-backup.timer
+    src: roles/proxy1/conf/borg-backup.timer
     dest: /etc/systemd/system/borg-backup.timer
 
 - name: Just force systemd to reread configs
