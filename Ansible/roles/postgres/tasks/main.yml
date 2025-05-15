@@ -1,0 +1,10 @@
+---
+
+  - name: configure NIC
+    import_tasks: network.yml
+
+  - name: Install and configure general packges
+    import_tasks: general.yml
+
+  - name: replace replica
+    import_tasks: reserve_replica.yml
