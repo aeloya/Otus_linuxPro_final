@@ -6,7 +6,7 @@
 
 - name: Copy /etc/hosts
   copy:
-      src: /home/miriel/Документы/Учеба/Otus/last/Ansible/roles/postgres/conf/hosts
+      src: roles/postgres/conf/hosts
       dest: /etc/hosts
 
 - name: Configure network
